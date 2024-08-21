@@ -13,8 +13,7 @@ npm-debug.log*
 dist/
 build/
 styles/
-controllers/
-models/
+
 
 # OS-specific files
 .DS_Store
