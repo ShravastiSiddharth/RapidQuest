@@ -24,7 +24,7 @@ const NewCustomersChart = () => {
 
             setLoading(true);
             try {
-                const response = await axios.post('http://localhost:5000/api/customers/new-customers', { interval, startDate, endDate });
+                const response = await axios.post('https://rapidquest-assessment-backend.onrender.com/api/customers/new-customers', { interval, startDate, endDate });
                 const data = response.data;
 
                 if (Array.isArray(data) && data.length > 0) {

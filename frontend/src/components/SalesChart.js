@@ -14,7 +14,7 @@ const SalesChart = () => {
     const fetchSalesData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:5000/api/orders/sales?interval=${interval}`);
+        const response = await axios.get(`https://rapidquest-assessment-backend.onrender.com/api/orders/sales?interval=${interval}`);
         setSalesData(response.data);
       } catch (error) {
         console.error("Error fetching sales data:", error);

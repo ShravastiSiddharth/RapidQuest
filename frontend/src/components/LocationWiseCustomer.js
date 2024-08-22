@@ -17,7 +17,7 @@ const LocationWiseCustomer = () => {
   useEffect(() => {
     const fetchCityData = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/api/customers/geographical-distribution');
+        const response = await axios.post('https://rapidquest-assessment-backend.onrender.com/api/customers/geographical-distribution');
         console.log(response.data)
         setCityData(response.data);
       } catch (error) {

@@ -13,7 +13,7 @@ const CohortValueChart = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.post('http://localhost:5000/api/customers/customer-lifetime-value', { interval });
+                const response = await axios.post('https://rapidquest-assessment-backend.onrender.com/api/customers/customer-lifetime-value', { interval });
 
                 if (response.data && Array.isArray(response.data)) {
                     const data = response.data;
