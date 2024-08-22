@@ -1,6 +1,6 @@
 
 import './App.css';
-import SalesChart from './components/SalesChart';
+
 import Layout from './components/Layout';
 
 function App() {

@@ -171,48 +171,38 @@ async function getCustomerDistribution(req, res) {
 
 
 
-// async function getCustomerLifetimeValue(req, res) {
-//     const db = await connectDB();
-//     const collection = db.collection('shopifyCustomers');
-
-//     const lifetimeValue = await collection.aggregate([
-//         {
-//             $group: {
-//                 _id: { $dateToString: { format: "%Y-%m", date: "$createdAtDate" } },
-//                 totalSpent: { $sum: { $toDouble: "$total_spent" } },
-//                 customers: { $sum: 1 }
-//             }
-//         },
-//         { $sort: { _id: 1 } }
-//     ]).toArray();
-
-//     res.json(lifetimeValue);
-// }
-
-
-function getDateFormat(interval) {
-    switch (interval) {
-        case 'yearly':
-            return "%Y";
-        case 'quarterly':
-            return "%Y-Q%q"; // Quarter is calculated separately
-        case 'monthly':
-        default:
-            return "%Y-%m";
-    }
-}
 
 async function getCustomerLifetimeValue(req, res) {
-    const { interval = 'monthly', startDate, endDate } = req.body; // Example: interval=monthly, yearly, quarterly, custom
+    const { interval = 'monthly', startDate, endDate } = req.body;
     const db = await connectDB();
     const customersCollection = db.collection('shopifyCustomers');
-    const ordersCollection = db.collection('shopifyOrders');
     
-    // Parse date strings to actual Date objects
     const start = startDate ? new Date(startDate) : new Date("1970-01-01");
     const end = endDate ? new Date(endDate) : new Date();
 
-    // Aggregate the data
+    let groupFormat;
+    switch (interval) {
+        case 'yearly':
+            groupFormat = "%Y";
+            break;
+        case 'quarterly':
+            groupFormat = { 
+                $concat: [
+                    { $toString: { $year: "$orderDate" } }, 
+                    "-Q", 
+                    { $toString: { $ceil: { $divide: [{ $month: "$orderDate" }, 3] } } }
+                ]
+            };
+            break;
+        case 'monthly':
+        case 'custom':  
+            groupFormat = "%Y-%m";
+            break;
+        default:
+            groupFormat = "%Y-%m-%d";
+            break;
+    }
+
     const lifetimeValue = await customersCollection.aggregate([
         {
             $match: {
@@ -231,26 +221,44 @@ async function getCustomerLifetimeValue(req, res) {
             $unwind: "$orders"
         },
         {
+            $addFields: {
+                orderDate: {
+                    $dateFromString: {
+                        dateString: { $substr: ["$orders.created_at", 0, 19] },
+                        format: "%Y-%m-%dT%H:%M:%S"
+                    }
+                }
+            }
+        },
+        {
+            $match: {
+                orderDate: { $gte: start, $lte: end }
+            }
+        },
+        {
             $group: {
                 _id: {
-                    interval: { $dateToString: { format: getDateFormat(interval), date: { $dateFromString: { dateString: "$created_at" } } } },
-                    customer: "$_id"
+                    customer_id: "$_id",
+                    period: { $dateToString: { format: groupFormat, date: "$orderDate" } }
                 },
                 totalSpent: { $sum: { $toDouble: "$orders.total_price" } }
             }
         },
         {
             $group: {
-                _id: "$_id.interval",
+                _id: "$_id.period",
                 totalSpent: { $sum: "$totalSpent" },
                 customers: { $sum: 1 }
             }
         },
-        { $sort: { _id: 1 } }
+        { 
+            $sort: { _id: 1 } 
+        }
     ]).toArray();
 
     res.json(lifetimeValue);
 }
+
 
 
 module.exports = {

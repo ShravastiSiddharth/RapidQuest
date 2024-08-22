@@ -1,15 +1,14 @@
 
-
 const connectDB = require('../services/database');
 
 async function getTotalSales(req, res) {
   const db = await connectDB();
   const collection = db.collection('shopifyOrders');
 
-  // Parse the interval from the query parameter
+ 
   const interval = req.query.interval || 'daily';
 
-  // Define the date format and group stages based on the interval
+  
   let dateFormat;
   let groupStage;
 
@@ -21,7 +20,7 @@ async function getTotalSales(req, res) {
       };
       break;
     case 'quarterly':
-      dateFormat = "%Y-Q%q"; // Quarters
+      dateFormat = "%Y-Q%q"; 
       groupStage = {
         _id: {
           year: { $year: "$createdAtDate" },

@@ -4,6 +4,7 @@ import SalesChart from './SalesChart';
 import NewCustomersChart from './NewCustomersChart';
 import RepeatedCustomersChart from './RepeatedCustomersChart';
 import LocationWiseCustomer from './LocationWiseCustomer';
+import CohortValueChart from './CohortValueChart';
 
 const Layout = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('sales');
@@ -12,12 +13,14 @@ const Layout = () => {
     switch (selectedMenuItem) {
       case 'sales':
         return <SalesChart />;
-      case 'customers':
+      case 'newCustomers':
         return <NewCustomersChart />;
-      case 'repeatedCustomers':
+      case 'growth':
         return <RepeatedCustomersChart/>
-      case 'geoDistribution':
+      case 'geography':
         return <LocationWiseCustomer/>
+      case 'cohort':
+        return <CohortValueChart/>  
       default:
         return <SalesChart />;
     }

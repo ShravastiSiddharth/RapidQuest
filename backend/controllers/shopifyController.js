@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Function to fetch data from shopifyCustomers collection
+
 const getCustomers = async (req, res) => {
   try {
     const db = mongoose.connection.db;
@@ -12,7 +12,7 @@ const getCustomers = async (req, res) => {
   }
 };
 
-// Function to fetch data from shopifyOrders collection
+
 const getOrders = async (req, res) => {
   try {
     const db = mongoose.connection.db;
@@ -24,7 +24,7 @@ const getOrders = async (req, res) => {
   }
 };
 
-// Function to fetch data from shopifyProducts collection
+
 const getProducts = async (req, res) => {
   try {
     const db = mongoose.connection.db;
