@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Line } from 'react-chartjs-2';
 
 const NewCustomersChart = () => {
-    const [chartData, setChartData] = useState(null); // Initialize with null
+    const [chartData, setChartData] = useState(null); 
     const [interval, setInterval] = useState('monthly');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');

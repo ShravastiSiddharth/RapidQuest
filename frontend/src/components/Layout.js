@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import SalesChart from './SalesChart';
 import NewCustomersChart from './NewCustomersChart';
+import RepeatedCustomersChart from './RepeatedCustomersChart';
+import LocationWiseCustomer from './LocationWiseCustomer';
 
 const Layout = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('sales');
@@ -12,6 +14,10 @@ const Layout = () => {
         return <SalesChart />;
       case 'customers':
         return <NewCustomersChart />;
+      case 'repeatedCustomers':
+        return <RepeatedCustomersChart/>
+      case 'geoDistribution':
+        return <LocationWiseCustomer/>
       default:
         return <SalesChart />;
     }

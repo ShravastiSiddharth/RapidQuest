@@ -12,13 +12,23 @@ const Sidebar = ({ onMenuItemClick }) => {
             className="p-4 hover:bg-gray-700 cursor-pointer"
             onClick={() => onMenuItemClick('sales')}
           >
-            Sales
+            Sales Report
           </li>
           <li
             className="p-4 hover:bg-gray-700 cursor-pointer"
             onClick={() => onMenuItemClick('customers')}
           >
-           New Customers
+           New Customers Report
+          </li>
+          <li 
+          className="p-4 hover:bg-gray-700 cursor-pointer"
+          onClick={() => onMenuItemClick('repeatedCustomers')}>
+          Customers Growth Report
+          </li>
+          <li 
+          className="p-4 hover:bg-gray-700 cursor-pointer"
+          onClick={() => onMenuItemClick('geoDistribution')}>
+          Customers Geographical Distribution
           </li>
         </ul>
       </nav>
