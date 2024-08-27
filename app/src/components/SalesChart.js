@@ -5,16 +5,27 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
+const timezones = [
+  'UTC',
+  'Asia/Kolkata',
+  'America/New_York',
+  'Europe/London',
+  'Asia/Tokyo',
+  'Australia/Sydney',
+ 
+];
+
 const SalesChart = () => {
   const [salesData, setSalesData] = useState([]);
   const [interval, setInterval] = useState('daily');
+  const [timezone, setTimezone] = useState('UTC');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSalesData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`https://rapidquest-assessment-backend.onrender.com/api/orders/sales?interval=${interval}`);
+        const response = await axios.get(`http://localhost:5000/api/orders/sales?interval=${interval}&timezone=${timezone}`);
         setSalesData(response.data);
       } catch (error) {
         console.error("Error fetching sales data:", error);
@@ -24,7 +35,7 @@ const SalesChart = () => {
     };
 
     fetchSalesData();
-  }, [interval]);
+  }, [interval, timezone]);
 
   const chartData = {
     labels: salesData.map(item => item._id),
@@ -59,12 +70,23 @@ const SalesChart = () => {
         <select
           value={interval}
           onChange={(e) => setInterval(e.target.value)}
-          className="p-2 bg-gray-100 border border-gray-300 rounded"
+          className="p-2 bg-gray-100 border border-gray-300 rounded mr-4"
         >
           <option value="daily">Daily</option>
           <option value="monthly">Monthly</option>
           <option value="quarterly">Quarterly</option>
           <option value="yearly">Yearly</option>
+        </select>
+        <select
+          value={timezone}
+          onChange={(e) => setTimezone(e.target.value)}
+          className="p-2 bg-gray-100 border border-gray-300 rounded"
+        >
+          {timezones.map(tz => (
+            <option key={tz} value={tz}>
+              {tz}
+            </option>
+          ))}
         </select>
       </div>
       {loading ? (
@@ -77,3 +99,4 @@ const SalesChart = () => {
 };
 
 export default SalesChart;
+
