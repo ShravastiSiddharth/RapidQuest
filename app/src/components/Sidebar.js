@@ -47,14 +47,14 @@ const Sidebar = ({ onMenuItemClick }) => {
           >
             Geographical Distribution
           </li>
-          <li
+          {/* <li
             className={`p-4 rounded-lg cursor-pointer ${
               activeItem === 'cohort' ? 'bg-indigo-600' : 'hover:bg-indigo-700'
             }`}
             onClick={() => handleMenuItemClick('cohort')}
           >
             Cohort Analysis
-          </li>
+          </li> */}
         </ul>
       </nav>
     </div>
