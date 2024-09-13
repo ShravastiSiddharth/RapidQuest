@@ -20,7 +20,7 @@ const AddressSchema = new mongoose.Schema({
   default: Boolean,
 });
 
-const ShopifyCustomerSchema = new mongoose.Schema({
+const shopifyCustomersSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.Number,
   addresses: [AddressSchema],
   admin_graphql_api_id: String,
@@ -51,4 +51,4 @@ const ShopifyCustomerSchema = new mongoose.Schema({
   verified_email: Boolean,
 });
 
-module.exports = mongoose.model('ShopifyCustomer', ShopifyCustomerSchema);
+module.exports = mongoose.model('shopifyCustomers', shopifyCustomersSchema);

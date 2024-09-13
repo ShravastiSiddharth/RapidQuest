@@ -1,3 +1,4 @@
+const { json } = require('express');
 const connectDB = require('../services/database');
 const { ObjectId } = require('mongodb');
 
@@ -5,7 +6,7 @@ const { ObjectId } = require('mongodb');
 async function getNewCustomersOverTime(req, res) {
     const { interval, startDate, endDate } = req.body;
     const db = await connectDB();
-    const collection = db.collection('shopifyCustomers');
+    const collection = db.collection('shopifycustomers');
 
 
     let dateFormat;
@@ -48,7 +49,7 @@ async function getNewCustomersOverTime(req, res) {
                 }
             }
         },
-        { $match: matchQuery }, 
+        { $match: matchQuery },
         {
             $group: {
                 _id: { $dateToString: { format: dateFormat, date: "$createdAtDate" } },
@@ -63,12 +64,20 @@ async function getNewCustomersOverTime(req, res) {
 
 
 
-async function getRepeatCustomers(req, res) {
-    const { interval, startDate, endDate } = req.body; 
-    const db = await connectDB();
-    const ordersCollection = db.collection('shopifyOrders');
 
-   
+
+
+
+
+
+
+
+async function getRepeatCustomers(req, res) {
+    const { interval, startDate, endDate } = req.body;
+    const db = await connectDB();
+    const ordersCollection = db.collection('shopifyorders');
+
+
     let dateFilter = {};
     if (startDate && endDate) {
         dateFilter = {
@@ -79,17 +88,17 @@ async function getRepeatCustomers(req, res) {
         };
     }
 
-   
+
     let groupFormat;
     switch (interval) {
         case 'yearly':
             groupFormat = "%Y";
             break;
         case 'quarterly':
-            groupFormat = { 
+            groupFormat = {
                 $concat: [
-                    { $toString: { $year: "$createdAtDate" } }, 
-                    "-Q", 
+                    { $toString: { $year: "$createdAtDate" } },
+                    "-Q",
                     { $toString: { $ceil: { $divide: [{ $month: "$createdAtDate" }, 3] } } }
                 ]
             };
@@ -98,7 +107,7 @@ async function getRepeatCustomers(req, res) {
             groupFormat = "%Y-%m";
             break;
         case 'custom':
-         
+
             groupFormat = "%Y-%m";
             break;
         default:
@@ -106,7 +115,7 @@ async function getRepeatCustomers(req, res) {
             break;
     }
 
-   
+
     const repeatCustomers = await ordersCollection.aggregate([
         {
             $addFields: {
@@ -137,13 +146,13 @@ async function getRepeatCustomers(req, res) {
         },
         {
             $group: {
-                _id: "$_id.period", 
-                repeatCustomers: { $sum: 1 } 
+                _id: "$_id.period",
+                repeatCustomers: { $sum: 1 }
             }
         },
-        { 
+        {
             $sort: { _id: 1 }
-        } 
+        }
     ]).toArray();
 
     res.json(repeatCustomers);
@@ -154,7 +163,7 @@ async function getRepeatCustomers(req, res) {
 
 async function getCustomerDistribution(req, res) {
     const db = await connectDB();
-    const collection = db.collection('shopifyCustomers');
+    const collection = db.collection('shopifycustomers');
 
     const distribution = await collection.aggregate([
         {
@@ -175,8 +184,8 @@ async function getCustomerDistribution(req, res) {
 async function getCustomerLifetimeValue(req, res) {
     const { interval = 'monthly', startDate, endDate } = req.body;
     const db = await connectDB();
-    const customersCollection = db.collection('shopifyCustomers');
-    
+    const customersCollection = db.collection('shopifycustomers');
+
     const start = startDate ? new Date(startDate) : new Date("1970-01-01");
     const end = endDate ? new Date(endDate) : new Date();
 
@@ -186,16 +195,16 @@ async function getCustomerLifetimeValue(req, res) {
             groupFormat = "%Y";
             break;
         case 'quarterly':
-            groupFormat = { 
+            groupFormat = {
                 $concat: [
-                    { $toString: { $year: "$orderDate" } }, 
-                    "-Q", 
+                    { $toString: { $year: "$orderDate" } },
+                    "-Q",
                     { $toString: { $ceil: { $divide: [{ $month: "$orderDate" }, 3] } } }
                 ]
             };
             break;
         case 'monthly':
-        case 'custom':  
+        case 'custom':
             groupFormat = "%Y-%m";
             break;
         default:
@@ -251,8 +260,8 @@ async function getCustomerLifetimeValue(req, res) {
                 customers: { $sum: 1 }
             }
         },
-        { 
-            $sort: { _id: 1 } 
+        {
+            $sort: { _id: 1 }
         }
     ]).toArray();
 
